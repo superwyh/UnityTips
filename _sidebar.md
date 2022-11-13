@@ -1,6 +1,0 @@
-* [关于](README.md)
-* [常用快捷键](shortcutkeys.md)
-* [编辑器](editor.md)
-* [摄像机的操作](camera.md)
-* [运行环境](run.md)
-* [按键相关](key.md)

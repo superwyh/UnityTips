@@ -23,7 +23,7 @@ Mac: Unity -> Preference-> Colors -> Playmode tint
 
 我们调试时，有可能会遇到一堆Debug.log的信息，只需要加入第二个参数，在Console窗口里直接点击这条信息，就可以自动定位到对应的GameObject。
 
-```Csharp
+```csharp 
 Debug.Log("试试这个", this.gameObject);
 ```
 ### 使用Debug.Break()暂停调试

@@ -1,7 +1,7 @@
 # Unity开发技巧：按键相关
 
 ### 获取正在按下的键
-```CSHARP
+```csharp
 if (Input.anyKeyDown) 
     {
         foreach (KeyCode keyCode in Enum.GetValues(typeof(KeyCode)))

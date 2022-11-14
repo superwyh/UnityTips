@@ -349,8 +349,31 @@ public class GetDeviceInfo : MonoBehaviour
 float timer -= Time.deltaTime; // timer就是时间
 ```
 
+之后可以通过以下函数，把浮点的时间转换为显示时间：
 
-### 获取时间和设置时间格式
+```csharp
+public static string FormatTime(float seconds)
+    {
+        TimeSpan ts = new TimeSpan(0, 0, Convert.ToInt32(seconds));
+        string str = "";
+        if (ts.Hours > 0)
+        {
+            str = ts.Hours.ToString("00") + ":" + ts.Minutes.ToString("00") + ":" + ts.Seconds.ToString("00");
+        }
+        if (ts.Hours == 0 && ts.Minutes > 0)
+        {
+            str = ts.Minutes.ToString("00") + ":" + ts.Seconds.ToString("00");
+        }
+        if (ts.Hours == 0 && ts.Minutes == 0)
+        {
+            str = "00:" + ts.Seconds.ToString("00");
+        }
+        return str;
+    }
+```
+
+
+### 获取系统时间和设置时间格式
 
 ```csharp
 DateTime currectDateTime = new DateTime();

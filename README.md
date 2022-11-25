@@ -1,6 +1,6 @@
 # Unity开发技巧(施工中)
 
-    本文档是笔者在学Unity，和近两年做游戏开发时的笔记。
+    本文档是笔者在学Unity，和近两年做游戏开发时的笔记。放在一个文档里是方便检索，读者可以直接 ctrl + f 搜索关键词。
 
 ---
 ## ✪ 常用快捷键
@@ -32,6 +32,11 @@ Mac: Unity -> Shortcuts
 ---
 
 ## ✪ 摄像机操作
+
+### 摄像机是什么时候移动的？
+
+摄像机是在 LateUpdate 移动的，晚于 Update，这样设计是避免摄像机移动了，但是场景里东西还没有渲染完。
+
 
 ### 屏幕坐标转世界坐标
 
@@ -267,6 +272,15 @@ Debug.Log("试试这个", this.gameObject);
 Destroy(gameObject, time);// time 是延迟的时间
 ```
 
+### 移除组件
+
+Destroy 也可以移除组件：
+
+```csharp
+Destroy(GetComponent());
+```
+
+
 ### 获取所有的子 GameObject
 
 ```csharp
@@ -295,9 +309,33 @@ foreach(var son in name)
 
 ```
 
-
 注意，用 foreach 的写法比较简单，但是在 C# 里，foreach 的效率非常差，所以对效率敏感，还是要改成 for 的写法。
 
+### 防止重新加载时被销毁
+比如防止背景音乐暂停等，可以加入：
+
+```csharp
+DontDestroyOnLoad(GameObject);
+```
+
+### 用 Rigidbody 停止物体
+
+可以通过 Rigidbody 停止一个物体的运动，改变 RigidbodyType2D 就可以：
+
+```csharp
+rb.bodyType = RigidbodyType2D.Static;
+```
+
+### 层剔除
+
+可以通过位运算，实现剔除一些 Layer，比如：
+
+```csharp
+LayerMask mask = 1 << 2; // 开启Layer2
+LayerMask mask = 0 << 3; // 剔除Layer3
+LayerMask mask = 1 << 2 | 1 << 3; // 开启Layer2和Layer3
+
+```
 
 ---
 
@@ -446,11 +484,118 @@ Debug.Log(currectDateTime.AddDays(100).ToString("yyyy-MM-dd HH:mm:ss")); //获�
 	Application.Quit();
 #endif
 ```
+### 获取系统语言
+
+```csharp
+using UnityEngine;
+
+public class Example : MonoBehaviour
+{
+    void Start()
+    {
+        if (Application.systemLanguage == SystemLanguage.French)
+        {
+            Debug.Log("This system is in French. ");
+        }
+    }
+}
+```
+
+### 常用文件操作
+```csharp
+Application.dataPath; //Asset文件夹的绝对路径
+Application.streamingAssetsPath;  //StreamingAssets文件夹的绝对路径（要先判断是否存在这个文件夹路径）
+Application.persistentData ; //可读写
+
+AssetDatabase.GetAllAssetPaths; //获取所有的资源文件（不包含meta文件）
+AssetDatabase.GetAssetPath(object) //获取object对象的相对路径
+AssetDatabase.Refresh(); //刷新
+AssetDatabase.GetDependencies(string); //获取依赖项文件
+
+Directory.Delete(p, true); //删除P路径目录
+Directory.Exists(p);  //是否存在P路径目录
+Directory.CreateDirectory(p); //创建P路径目录
+```
+
+### AssetsBundle 打包
+```csharp
+using UnityEditor;
+using System.IO;
+
+public class CreateAssetBundles 
+{
+
+    [MenuItem("Assets/Build AssetBundles")]
+    static void BuildAllAssetBundles()
+    {
+        string dir = "AssetBundles";
+        if (Directory.Exists(dir) == false)
+        {
+            Directory.CreateDirectory(dir);
+        }
+        BuildPipeline.BuildAssetBundles(dir, BuildAssetBundleOptions.ChunkBasedCompression, BuildTarget.StandaloneWindows64);
+    }
+}
+```
+
+### AssetsBundle 加载
+
+从内存区域创建一个AssetBundle 。优点：可以通过 byte[] 加载加密过的AB包，缺点：内存占用高，会占用两份内存。
+ ```csharp
+IEnumerator Start()
+{
+    string path = "AssetBundles/wall.unity3d";
+    AssetBundleCreateRequest request =AssetBundle.LoadFromMemoryAsync(File.ReadAllBytes(path));
+    yield return request;
+    AssetBundle ab = request.assetBundle;
+    GameObject wallPrefab = ab.LoadAsset<GameObject>("Cube");
+    Instantiate(wallPrefab);
+}
+
+ ```
+ 从硬盘的文件中加载一个 AssetBundle。优点：加载速度快，占用内存小。缺点：加载加密的 AB 包可能会失败。
+ ```csharp
+ IEnumerator Start()
+{
+    string path = "AssetBundles/wall.unity3d";
+    AssetBundleCreateRequest request = AssetBundle.LoadFromFileAsync(path);
+    yield return request;
+    AssetBundle ab = request.assetBundle;
+    GameObject wallPrefab = ab.LoadAsset<GameObject>("Cube");
+    Instantiate(wallPrefab);
+}
+```
+在线加载。
+```csharp
+IEnumerator Start()
+{
+    string uri = @"http://localhost/AssetBundles/cubewall.unity3d";
+    UnityWebRequest request =   UnityWebRequest.GetAssetBundle(uri);
+    yield return request.Send();
+    AssetBundle ab = DownloadHandlerAssetBundle.GetContent(request);
+    GameObject wallPrefab = ab.LoadAsset<GameObject>("Cube");
+    Instantiate(wallPrefab);
+}
+```
+---
+
+## ✪ 动画相关
+
+### 倒放动画
+
+把动画的 speed 调整为 -1 。
 
 
 ---
 
 ## ✪ C#相关
+
+### Random.Range 范围界定
+
+当 Range 的参数是 float 时，返回一个随机浮点数，在 min（包含） 和 max（包含） 之间。
+当 Range 的参数是 int 时，返回一个随机整数，在 min（包含） 和 max（排除） 之间。
+注意两者是不同的。
+
 
 ### 安全的生成随机数
 
@@ -473,3 +618,12 @@ rand.GetBytes(bytes);
 var rand=RandomNumberGenerator.GetBytes(200);
 ```
 
+### foreach 期间不能修改
+下面的操作会在运行时报错，因为 foreach 期间是不能修改的。
+
+```csharp
+foreach (int item in ls)
+{
+    ls.Remove(item);
+}
+```

@@ -238,20 +238,20 @@ Mac: Unity -> Preference-> Colors -> Playmode tint
 ![Paste Component Values](images/dac9bf9e42633643cf767ffff14855039177c0aa5ebef4074e087eb7cfdf736a.png)  
 
 
-### 使用Debug.log 的第二个参数，实现调试时定位到GameObject
+### 使用 Debug.log 的第二个参数，实现调试时定位到 GameObject
 
-我们调试时，有可能会遇到一堆Debug.log的信息，只需要加入第二个参数，在Console窗口里直接点击这条信息，就可以自动定位到对应的GameObject。
+我们调试时，有可能会遇到一堆 Debug.log 的信息，只需要加入第二个参数，在 Console 窗口里直接点击这条信息，就可以自动定位到对应的 GameObject。
 
 ```csharp 
 Debug.Log("试试这个", this.gameObject);
 ```
-### 使用Debug.Break()暂停调试
+### 使用 Debug.Break() 暂停调试
 
-在代码里使用Debug.Break()直接在所在位置暂停。
+在代码里使用 Debug.Break() 直接在所在位置暂停。
 
 ### 不需要创建空物体就可以执行代码
 
-不需要继承MonoBehavior并挂接在物体身上,只要加入：
+不需要继承 MonoBehavior 并挂接在物体身上,只要加入：
 
 ```csharp
 [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -267,11 +267,43 @@ Debug.Log("试试这个", this.gameObject);
 Destroy(gameObject, time);// time 是延迟的时间
 ```
 
+### 获取所有的子 GameObject
+
+```csharp
+
+for (int i = 0; i < transform.childCount; i++)
+{
+    //transform.GetChild(i).gameObject
+}
+```
+这种方法可以获取所有的子物体，但是不包含孙物体，如果需要孙物体，可以下面这么写：
+
+```csharp
+foreach (var child in GetComponentsInChildren<Transform>())
+{
+    Debug.Log(child.name);
+}
+```
+如果需要精确定位子物体和孙物体，比如某些物体你是不想包含进去的，那么可以给需要的物体加上 tag，然后通过下面这种方法获取：
+
+```csharp
+GameObject[] name = GameObject.FindGameObjectsWithTag("need");
+foreach(var son in name)
+{
+    Debug.Log(son.name);
+}
+
+```
+
+
+注意，用 foreach 的写法比较简单，但是在 C# 里，foreach 的效率非常差，所以对效率敏感，还是要改成 for 的写法。
+
+
 ---
 
 ## ✪ 编辑器
 
-### 在代码里组织Inspector的信息
+### 在代码里组织 Inspector 的信息
 
 ```csharp
 [Header("移动速度")]
@@ -301,8 +333,8 @@ public Transform target;
 ![Space](images/de771a4cc134172ab0c64d56bdd706e1fc17ea33fcda59c7daed40e81ed9a4fb.png)  
 
 
-### Resources文件夹
-Resources 文件夹允许你在脚本中通过文件路径和名称来访问资源。放在这一文件夹的资源永远被包含进build中，即使它没有被使用。在某些情况下 Resources 使用起来非常方便，但是 Resources 隐患非常大。比如 Resources 会影响启动和构建的时间，比如伴随着文件增多会变得非常难以管理，比如 Resources 内的文件是无法动态更新的。
+### Resources 文件夹
+Resources 文件夹允许你在代码中通过文件路径和名称来访问资源。放在这一文件夹的资源永远被包含进打包文件中，即使它没有被使用。在某些情况下 Resources 使用起来很方便，但是 Resources 隐患非常大。比如 Resources 会影响启动和构建的时间，比如伴随着文件增多会变得非常难以管理，比如 Resources 内的文件是无法动态更新的。
 
 
 ---
@@ -353,23 +385,23 @@ float timer -= Time.deltaTime; // timer就是时间
 
 ```csharp
 public static string FormatTime(float seconds)
+{
+    TimeSpan ts = new TimeSpan(0, 0, Convert.ToInt32(seconds));
+    string str = "";
+    if (ts.Hours > 0)
     {
-        TimeSpan ts = new TimeSpan(0, 0, Convert.ToInt32(seconds));
-        string str = "";
-        if (ts.Hours > 0)
-        {
-            str = ts.Hours.ToString("00") + ":" + ts.Minutes.ToString("00") + ":" + ts.Seconds.ToString("00");
-        }
-        if (ts.Hours == 0 && ts.Minutes > 0)
-        {
-            str = ts.Minutes.ToString("00") + ":" + ts.Seconds.ToString("00");
-        }
-        if (ts.Hours == 0 && ts.Minutes == 0)
-        {
-            str = "00:" + ts.Seconds.ToString("00");
-        }
-        return str;
+        str = ts.Hours.ToString("00") + ":" + ts.Minutes.ToString("00") + ":" + ts.Seconds.ToString("00");
     }
+    if (ts.Hours == 0 && ts.Minutes > 0)
+    {
+        str = ts.Minutes.ToString("00") + ":" + ts.Seconds.ToString("00");
+    }
+    if (ts.Hours == 0 && ts.Minutes == 0)
+    {
+        str = "00:" + ts.Seconds.ToString("00");
+    }
+    return str;
+}
 ```
 
 
@@ -422,20 +454,20 @@ Debug.Log(currectDateTime.AddDays(100).ToString("yyyy-MM-dd HH:mm:ss")); //获�
 
 ### 安全的生成随机数
 
-我们最常用的生成随机数是Random()，如下：
+我们最常用的生成随机数是 Random()，如下：
 
 ```csharp
 Random number = new Random();
 ```
 
-但在高并发下，这种方法很可能会短时间生成大量相同的随机数。这种情况可以使用RandomNumberGenerator。使用方法如下：
+但在高并发下，这种方法很可能会短时间生成大量相同的随机数。这种情况可以使用 RandomNumberGenerator。使用方法如下：
 
 ```csharp
 var rand = System.Security.Cryptography.RandomNumberGenerator.Create();
 byte[] bytes = new byte[200]; 
 rand.GetBytes(bytes);
 ```
-在.Net 6.0后，支持一行生成：
+在 .Net 6.0 后，支持一行生成：
 
 ```csharp
 var rand=RandomNumberGenerator.GetBytes(200);

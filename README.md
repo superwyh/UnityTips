@@ -1,9 +1,9 @@
 # Unity开发技巧(施工中)
 
-    本文档是笔者在学Unity，和近两年做游戏开发时的笔记。放在一个文档里是方便检索，读者可以直接 ctrl + f 搜索关键词。
+    本文档是笔者在学 Unity，和做游戏开发时的笔记。放在一个文档里是方便检索，读者可以直接 ctrl + f 搜索关键词。
 
 ---
-## ✪ 常用快捷键
+## ✪ 快捷键
 
 ### QWERTY
 
@@ -28,6 +28,18 @@ Mac: Unity -> Shortcuts
 ### 展开或收起所有层级
 
 假设你的 Hierarchy 窗口里的东西层级非常多，想要一次性收起或者打开所有层级的子物体。只需要按住ALT键点击 GameObject 左边的小三角就可以。
+
+### 摄像机对准
+
+按 F 键可以直接让摄像机对准你选中的物体。
+
+### 跟踪物体
+
+按两下 F 键可以直接让摄像机跟踪物体。
+
+### 顶点对其
+
+按住 V 拖拽物体，可以自动顶点对其。
 
 ---
 
@@ -161,7 +173,7 @@ public class ShowCameraFieldOfView : MonoBehaviour
 
 ---
 
-## ✪ 按键相关
+## ✪ 按键
 
 ### 获取正在按下的键
 ```csharp
@@ -216,55 +228,7 @@ public class DoubleClickMouseButton : MonoBehaviour
 
 ---
 
-## ✪ 运行环境
-
-### 运行模式着色
-
-Unity默认在运行模式下，场景内的操作是不会保留的，所以很容易出现开发者没注意是运行模式，进行了修改，结果没有保存的情况。那么可以使用运行模式着色，提醒开发者正在运行模式内。设置地址如下：
-
-```
-Windows: Edit -> Preference -> Colors -> Playmode tint
-Mac: Unity -> Preference-> Colors -> Playmode tint
-```
-
-![Playmode tint](images/13a0d8cc53e7562f8bfdeba84e648d9d164f919b77bc34b8a7b3220f30c8f5e8.png)  
-
-只需要修改这里的颜色后，在运行模式时，窗口就会被加上颜色，如下：
-
-![上色后](images/20db41fcfacefa81417f06dc44c798a0e66d17c6969543fce3742b716a4c401c.png)  
-
-### 运行模式下改动
-
-假如你也根本没有注意到运行模式的着色，还是修改了内容，也有办法保存。在运行时，右键点击你修改过的物体，然后选择Copy Component，结束运行模式后，再Paste Component Values即可。
-
-![Copy Component](images/a5acac0b4adbed6450f5e3651b2355293f1440d33d02e9f8a8aaa33314210a3c.png)  
-
-
-![Paste Component Values](images/dac9bf9e42633643cf767ffff14855039177c0aa5ebef4074e087eb7cfdf736a.png)  
-
-
-### 使用 Debug.log 的第二个参数，实现调试时定位到 GameObject
-
-我们调试时，有可能会遇到一堆 Debug.log 的信息，只需要加入第二个参数，在 Console 窗口里直接点击这条信息，就可以自动定位到对应的 GameObject。
-
-```csharp 
-Debug.Log("试试这个", this.gameObject);
-```
-### 使用 Debug.Break() 暂停调试
-
-在代码里使用 Debug.Break() 直接在所在位置暂停。
-
-### 不需要创建空物体就可以执行代码
-
-不需要继承 MonoBehavior 并挂接在物体身上,只要加入：
-
-```csharp
-[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-```
-
----
-
-## ✪ GameObject操作
+## ✪ GameObject 操作
 
 ### 延迟销毁
 
@@ -280,6 +244,13 @@ Destroy 也可以移除组件：
 Destroy(GetComponent());
 ```
 
+### 不需要创建空物体就可以执行代码
+
+不需要继承 MonoBehavior 并挂接在物体身上,只要加入：
+
+```csharp
+[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+```
 
 ### 获取所有的子 GameObject
 
@@ -341,7 +312,101 @@ LayerMask mask = 1 << 2 | 1 << 3; // 开启Layer2和Layer3
 
 ## ✪ 编辑器
 
+### 运行模式着色
+
+Unity默认在运行模式下，场景内的操作是不会保留的，所以很容易出现开发者没注意是运行模式，进行了修改，结果没有保存的情况。那么可以使用运行模式着色，提醒开发者正在运行模式内。设置地址如下：
+
+```
+Windows: Edit -> Preference -> Colors -> Playmode tint
+Mac: Unity -> Preference-> Colors -> Playmode tint
+```
+
+![Playmode tint](images/13a0d8cc53e7562f8bfdeba84e648d9d164f919b77bc34b8a7b3220f30c8f5e8.png)  
+
+只需要修改这里的颜色后，在运行模式时，窗口就会被加上颜色，如下：
+
+![上色后](images/20db41fcfacefa81417f06dc44c798a0e66d17c6969543fce3742b716a4c401c.png)  
+
+### 运行模式下改动
+
+假如你也根本没有注意到运行模式的着色，还是修改了内容，也有办法保存。在运行时，右键点击你修改过的物体，然后选择Copy Component，结束运行模式后，再Paste Component Values即可。
+
+![Copy Component](images/a5acac0b4adbed6450f5e3651b2355293f1440d33d02e9f8a8aaa33314210a3c.png)  
+
+
+![Paste Component Values](images/dac9bf9e42633643cf767ffff14855039177c0aa5ebef4074e087eb7cfdf736a.png)  
+
+
+### 使用 Debug.log 的第二个参数，实现调试时定位到 GameObject
+
+我们调试时，有可能会遇到一堆 Debug.log 的信息，只需要加入第二个参数，在 Console 窗口里直接点击这条信息，就可以自动定位到对应的 GameObject。
+
+```csharp 
+Debug.Log("试试这个", this.gameObject);
+```
+### 使用 Debug.Break() 暂停调试
+
+在代码里使用 Debug.Break() 直接在所在位置暂停。
+
+### 修改显示顺序
+
+开发者可以用代码修改物体的现实顺序，方法是：
+
+```csharp
+transform.SetSiblingIndex(index)
+```
+
+### Stats窗口
+
+Unity 的 Stats 窗口可以看大概的运行参数，在 Game 窗口的右上角。
+
+
+![Stats](images/0677557cb1f50a82587639bc4febdd5230b9e6089afa082b2f93173b9fcd6a19.png)  
+
+
+
+### 修改移动设置
+
+开发者按住 ctrl 移动物体时，可以移动固定一个范围。
+
+开发者也可以修改编辑器中的移动的设置，控制一次移动多少单位，2021 以前版本的 Unity 在：
+
+```csharp
+Edit -> Snap Settings
+```
+
+2021 后版的 Unity 在：
+
+![Snap Settings](images/826344c9d67fe3787dee04cb61094be508e8a32034e60b223083cd3bdcd5d7c3.png)  
+
+
+
+### 保存布局
+
+开发者可以保存自己的界面布局，比如根据不同的开发状态设置不同的布局方式，位置如下：
+
+![保存布局](images/5d74bcd47f04e13bbbf97b972bd226084a52693bda511ed46cd5fff99a49313b.png)  
+
+
 ### 在代码里组织 Inspector 的信息
+
+```charp
+[SerializeField]
+```
+让一个 Private 变量在 Inspector 中显示。
+
+```csharp
+[HideInInspector]
+```
+
+让一个 Public 变量在 Inspector 中隐藏。
+
+```csharp
+[FormerlySerializedAs("Miao")]
+```
+
+在 Inspector 中重命名一个变量。
+
 
 ```csharp
 [Header("移动速度")]
@@ -371,13 +436,25 @@ public Transform target;
 ![Space](images/de771a4cc134172ab0c64d56bdd706e1fc17ea33fcda59c7daed40e81ed9a4fb.png)  
 
 
+### 快捷方式
+
+在 Windows 的文件管理器中创建一个快捷方式，然后拖拽到 Unity 中也可以直接使用。一些开发常用的外部文件，可以在 Unity 里直接打开，节省了切换窗口的时间。
+
+### Project 中搜索
+
+在 Project 中搜索可以直接填写文件类型：
+
+```csharp
+name t:type
+```
+
 ### Resources 文件夹
 Resources 文件夹允许你在代码中通过文件路径和名称来访问资源。放在这一文件夹的资源永远被包含进打包文件中，即使它没有被使用。在某些情况下 Resources 使用起来很方便，但是 Resources 隐患非常大。比如 Resources 会影响启动和构建的时间，比如伴随着文件增多会变得非常难以管理，比如 Resources 内的文件是无法动态更新的。
 
 
 ---
 
-## ✪ 硬件和系统相关
+## ✪ 硬件和系统
 
 ### 获取硬件配置信息
 
@@ -501,7 +578,7 @@ public class Example : MonoBehaviour
 }
 ```
 
-### 常用文件操作
+### 文件操作
 ```csharp
 Application.dataPath; //Asset文件夹的绝对路径
 Application.streamingAssetsPath;  //StreamingAssets文件夹的绝对路径（要先判断是否存在这个文件夹路径）
@@ -579,16 +656,52 @@ IEnumerator Start()
 ```
 ---
 
-## ✪ 动画相关
+## ✪ 精灵
+
+### 设置
+
+Unity 里设计到 2D 游戏的遮挡关系，有一个很简单的设置办法。
+
+1. 在 Edit -> Project Settings -> Graphics -> CameraSetting 按照如下设置：
+
+![Transparency](images/89420b063b1228076f6cfed1a85663633c4931c2fb8301e241845d1f1ec9dcb7.png)  
+
+2. 把每个角色的 Pivot 放在图片的脚底。
+3. 把每个角色的 Sprite Sort Point 改成 Pivot。
+
+这样 2D 角色就能够形成自然的遮挡关系。
+
+---
+
+## ✪ 动画
 
 ### 倒放动画
 
 把动画的 speed 调整为 -1 。
 
+---
+
+## ✪ 音频
+
+### 音频压缩
+
+LoadType 有三种，分别为：
+
+* DeCompressOnLoad :音频文件将在加载后立即解压缩，对较小的音效使用此选项可避免动态解压缩的性能开销。千万不要对大文件使用这个选项，会增大内存开支。
+* CompressedInMemory 将声音压缩在内存中，播放时解压缩。适合体积较大的音效文件。
+* Streaming 动态解码声音，此方法是使用最小量的内存来缓冲从磁盘逐渐读取并在运行中解码的压缩数据。适合大文件，比如背景音等。
+
+Preload Audio Data：这个选项如果启用音频剪辑将在场景加载时预先加载，也就是当场景开始播放时，所有的 AudioClips 已经完成了加载。注意选上后，游戏的预加载时间会边长，但是游戏过程中的加载时间会变短。
+
+Compression Format 有三种，分别为：
+
+* PCM：适合短音效。
+* ADPCM：适合频繁使用的音效。
+* Vorbis：适合长音效，尤其是背景音。
 
 ---
 
-## ✪ C#相关
+## ✪ C#
 
 ### Random.Range 范围界定
 
@@ -618,6 +731,13 @@ rand.GetBytes(bytes);
 var rand=RandomNumberGenerator.GetBytes(200);
 ```
 
+### 随机布尔值
+
+```csharp
+bool trueOrFalse = (Random.value > 0.5f);
+```
+
+
 ### foreach 期间不能修改
 下面的操作会在运行时报错，因为 foreach 期间是不能修改的。
 
@@ -626,4 +746,61 @@ foreach (int item in ls)
 {
     ls.Remove(item);
 }
+```
+
+### WaitForSeconds 的问题
+
+如果在协程中使用 WaitForSeconds ，那么注意当 timeScale 为0时，协程中的 WaitForSeconds 会失效。
+
+解决办法是使用 WaitForSecondsRealtime 。
+
+### readonly
+
+如果确定不会变动的字符串，可以使用 readonly string 创建，内存开销会降低。
+
+```csharp
+public readonly string stringname = "Hello World";
+```
+
+
+### InvokeRepeating
+
+InvokeRepeating 可以一直让一段代码执行，甚至 SetActive(false) 后也在执行。
+
+```csharp
+
+public class ExampleScript : MonoBehaviour
+{
+    public Rigidbody projectile;
+
+    void Start()
+    {
+        InvokeRepeating("LaunchProjectile", 2.0f, 0.3f);
+    }
+
+    void LaunchProjectile()
+    {
+        Rigidbody instance = Instantiate(projectile);
+
+        instance.velocity = Random.insideUnitSphere * 5;
+    }
+}
+
+```
+
+---
+
+##  ✪ 数学和算法
+
+### 尽量避免使用 Distance
+
+我们有时候会用下面的方法计算向量距离：
+
+```chsarp
+Vector3.Distance(A.position,B.position);
+```
+但如果需要频繁计算，这种方法效率很低。而下面的方法效率更高：
+
+```csharp
+ (A.position - B.position).sqrMagnitude;
 ```
